@@ -1,7 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
 const math = require('mathjs');
+const express = require('express');
 
 require('dotenv').config();
+
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Function to solve math expressions
@@ -148,4 +150,19 @@ bot.on('message', (msg) => {
     console.log(error);
     bot.sendMessage(chatId, 'Sorry, I was unable to solve the math expression.');
   }
+});
+// Create an Express app
+const app = express();
+
+// Set up the endpoint for receiving updates from the Telegram bot
+app.use(express.json());
+app.post(`/telegram/${process.env.BOT_TOKEN}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+// Start the server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
