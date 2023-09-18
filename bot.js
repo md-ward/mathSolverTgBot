@@ -5,10 +5,10 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-
+const port = process.env.PORT || 3000
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   webHook: {
-    port: process.env.PORT || 3000,
+    port: port,
   }
   // polling: true
 });
@@ -159,7 +159,7 @@ bot.on('message', (msg) => {
 });
 
 app.use(bodyParser)
-app.get(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`, (req, res) => {
+app.post(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
   console.log(req.body)
@@ -169,6 +169,6 @@ app.get(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`, (req, res) => {
 bot.setWebHook(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`);
 
 // Start the server
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
