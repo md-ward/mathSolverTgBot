@@ -2,9 +2,17 @@ const TelegramBot = require('node-telegram-bot-api');
 const math = require('mathjs');
 
 require('dotenv').config();
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
 
+const bot = new TelegramBot(process.env.BOT_TOKEN, {
+  webHook: {
+    port: process.env.PORT || 3000,
+  }
+});
 // Function to solve math expressions
+
 function solveMathExpression(expression) {
   try {
     const result = math.evaluate(expression);
@@ -148,4 +156,17 @@ bot.on('message', (msg) => {
     console.log(error);
     bot.sendMessage(chatId, 'Sorry, I was unable to solve the math expression.');
   }
+});
+
+app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
+// Set up the webhook
+bot.setWebHook(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`);
+
+// Start the server
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
