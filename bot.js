@@ -10,9 +10,9 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
   webHook: {
     port: process.env.PORT || 3000,
   }
+  // polling: true
 });
 // Function to solve math expressions
-
 function solveMathExpression(expression) {
   try {
     const result = math.evaluate(expression);
@@ -158,9 +158,11 @@ bot.on('message', (msg) => {
   }
 });
 
-app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
+app.use(bodyParser)
+app.get(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
+  console.log(req.body)
 });
 
 // Set up the webhook
