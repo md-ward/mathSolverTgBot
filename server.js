@@ -7,10 +7,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
-  webHook: {
-    port: port,
-  }
-  // polling: true
+  
+  polling: true
 });
 // Function to solve math expressions
 function solveMathExpression(expression) {
@@ -158,15 +156,15 @@ bot.on('message', (msg) => {
   }
 });
 
-app.use(bodyParser)
-app.post(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`, (req, res) => {
-  bot.processUpdate(req.body);
-  res.sendStatus(200);
-  console.log(req.body)
-});
+// app.use(bodyParser)
+// app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
+//   bot.processUpdate(req.body);
+//   res.sendStatus(200);
+//   console.log(req.body)
+// });
 
 // Set up the webhook
-bot.setWebHook(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`);
+// bot.setWebHook(`${process.env.CYCLIC_URL}/bot${process.env.BOT_TOKEN}`);
 
 // Start the server
 app.listen(port, () => {
